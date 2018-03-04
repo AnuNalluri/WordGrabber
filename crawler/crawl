@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Set environment variables
+source $VIRTUAL_ENV/../setup/set_env.sh
+echo "Environment variables set!"
+
+# Create data directory if it doesn't exist
+if [ ! -e "$DATA_DIR" ]; then
+	mkdir $DATA_DIR
+	echo "Data directory not found, an empty one has been created!"
+fi
+
+# Create URL list file if it doesn't exist
+if [ ! -e "$URL_LIST" ]; then
+	touch urls
+	echo "URL file not found, an empty one has been created!"
+fi
+
+# Run spider with spider.py default
+if [ -z ${1+x} ]; then 
+	scrapy runspider $VIRTUAL_ENV/../code/spider.py;
+else
+	scrapy runspider $1;
+fi
