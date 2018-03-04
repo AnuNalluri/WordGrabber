@@ -1,4 +1,4 @@
-# Setup Instructions
+# Setup Instructions - Mac
 
 ## Crawl 
 
@@ -8,3 +8,5 @@
 4. To run a different spider, run "source crawl <spider file name>.py"
 
 You can also move the "crawl" bash script to env/bin/ and can simply run "crawl" in the future.
+
+# Set Instructions - Ubuntu

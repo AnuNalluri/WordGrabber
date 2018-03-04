@@ -1,0 +1,14 @@
+1. decide where we want to save data and implement database (kunal)
+	- Savio: Be capable of running without a persistent database running on Savio. An externally hosted database, to which your software on Savio connects, is OK. So is a database that is run on Savio only during execution of your job(s), which is populated by reading files from disk and whose state is saved (if necessary) by exporting the database state to files on disk.
+	- As a result, we will need to run the database during our allocation time and periodically spit to the ouptut 
+2. decide what data we want to collect
+	- store the html in case we want to use it in the future
+		- ads data
+	- headers
+	- table for meeting 
+3. decide how to jump between links
+	- naively jump through everything, ask rest of team too
+4. decide how we want to keep track of visited nodes (charlie)
+	- SQLite
+5. security (vinay)
+6. parallelizing (vinay)
