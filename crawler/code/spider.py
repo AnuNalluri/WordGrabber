@@ -1,5 +1,8 @@
 import scrapy
 import os
+
+import sqlite3
+
 from article import Article
 
 class FakeNewsSpider(scrapy.Spider):
@@ -16,8 +19,10 @@ class FakeNewsSpider(scrapy.Spider):
     def parse(self, response):
         # data model for parsing
         data = Article(response)
-        
+
         # saves data of article to a file, we should move to a database after
+              
+        
         data.save_to_file(data.url)
 
         # iterate through the links on the page and continue crawling
