@@ -16,12 +16,13 @@ class FakeNewsSpider(scrapy.Spider):
     def parse(self, response):
         # data model for parsing
         data = Article(response)
-
+        
         # saves data of article to a file, we should move to a database after
         data.save_to_file(data.url)
 
         # iterate through the links on the page and continue crawling
         for link in data.get_links():
+            # check to see if url exists in sqllite db, if it does then do not yield, if it doesn't then add it to db and yield
             yield response.follow(link, callback=self.parse)
 
 
