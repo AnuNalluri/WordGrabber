@@ -2,6 +2,7 @@ import scrapy
 import os
 
 import sqlite3
+from sqlite3 import Error
 
 from article import Article
 
@@ -20,6 +21,23 @@ class FakeNewsSpider(scrapy.Spider):
         # data model for parsing
         data = Article(response)
 
+	db = os.environ["VISITED_URLS"]
+	tablename = "VISITED_URLS"
+	col1 = "URLS"
+	field_type = 'TEXT'
+
+	try:
+		conn = sqlite3.connect(db)
+		c = conn.cursor()
+		
+		c.execute('CREATE TABLE {tn} ({nf} {ft})'\
+			.format(tn = tablename, nf = col1, ft = field_type))
+
+
+	except Error as e:
+		print(e)
+		conn.close()
+
         # saves data of article to a file, we should move to a database after
               
         
@@ -28,6 +46,14 @@ class FakeNewsSpider(scrapy.Spider):
         # iterate through the links on the page and continue crawling
         for link in data.get_links():
             # check to see if url exists in sqllite db, if it does then do not yield, if it doesn't then add it to db and yield
+
+	    c.execute("INSERT OR IGNORE INTO {tn} ({cn}) VALUES (link)".\
+		format(tn = tablename, cn = col1))
+	    
             yield response.follow(link, callback=self.parse)
+
+
+	conn.commit()
+	conn.close()
 
 
