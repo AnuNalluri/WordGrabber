@@ -1,15 +1,13 @@
 import scrapy
 import os
-
 import sqlite3
 from sqlite3 import Error
 
 from article import Article
-
 class FakeNewsSpider(scrapy.Spider):
-
     name = "FNAB"
-
+    CONCURRENT_REQUESTS = 100
+    REACTOR_THREADPOOL_MAXSIZE = 20
     # initial method run by scrapy
     def start_requests(self):
         urls = tuple(open(os.environ["URL_LIST"], 'r'))
