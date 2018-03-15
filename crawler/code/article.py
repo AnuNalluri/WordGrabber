@@ -22,7 +22,7 @@ class Article:
 
     def save_to_file(self, filename):
         with open(os.environ["DATA_DIR"] + filename, "w") as f:
-            f.write(str(self.to_dict()))
+            f.write(str(self.to_dict()) + "\n")
 
     def get_title(self):
         return self.title
