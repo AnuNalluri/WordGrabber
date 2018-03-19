@@ -18,7 +18,7 @@ class Article:
         return self.__dict__
 
     def save_to_file(self, filename):
-        with open(os.environ["DATA_DIR"] + filename, "w") as f:
+        with open(os.environ["DATA_DIR"] + filename, "a+") as f:
             f.write(str(self.to_dict()))
 
     def get_title(self):
