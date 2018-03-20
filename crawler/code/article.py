@@ -1,8 +1,21 @@
 import os
+import json
 try:
     from urllib.parse import urlparse
 except ImportError:
      from urlparse import urlparse
+
+
+class Page:
+    def __init__(self, response):
+        self.hostname = urlparse(response.url).hostname
+        self.url = response.url
+	self.html = response.text
+        self.hostlinks = [urlparse(link.extract()).hostname for link in response.xpath("//a/@href")]
+    def save_to_file(self):
+       with open(os.environ["DATA_DIR"] + self.hostname, "a+") as f:
+           to_write = {"URL": self.url, "HTML": self.html, "outlinks": self.hostlinks}
+           f.write(json.dumps(to_write, separators = (',', ': ')) + "\n~~~~~~\n");
 
 class Article:
 
@@ -19,10 +32,9 @@ class Article:
 
     def to_dict(self):
         return self.__dict__
-
-    def save_to_file(self, filename):
-        with open(os.environ["DATA_DIR"] + filename, "a+") as f:
-            f.write(str(self.to_dict()))
+    def save_to_file(self):
+        new_page =  Page(self.response)
+        new_page.save_to_file()
 
     def get_title(self):
         return self.title
