@@ -41,28 +41,31 @@ def write_csv_media(media_name, chunk_size = 100):
         data = r.json()
 
         if not len(data):
-            # Done if no more media sources to get
-
-            if media_idx == len(media_name) - 1:
-                break
 
             # If there are more media_names, write what we have to csv file and continue
-            with open( '/tmp/media.csv', 'wb') as csvfile:
-                print ("open")
+            with open( './csv_storage/media.csv', 'a', newline="") as csvfile:
+                print ("\nOpened file: Dumping media source content for {}\n".format(media_name[media_idx]))
+
+                # Flush media buffer to csv file
+                cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
+
                 if not opened:
-                    # If first time writing to csv file, init writer and the header fields
-                    cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
                     cwriter.writeheader()
                     opened = True
 
-                # Flush media buffer to csv file
                 cwriter.writerows( media )
 
             # Continue to next user-inputted media_name
+            media_idx += 1
             last_media_id = 0
             media = []
-            media_idx += 1
-            continue
+            if media_idx < len(media_name):
+                print ("Grabbing sources of next media name:{}\n".format(media_name[media_idx]))
+                continue
+
+            # Done if no more media sources to get
+            break
+
 
         #add to media buffer and search for more media sources similar to current media_name
         media.extend( data )
