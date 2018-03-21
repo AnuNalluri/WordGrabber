@@ -1,6 +1,7 @@
 import mediacloud, json, datetime, csv
-import pkg_resources
+import pandas as pd
 import requests
+import pkg_resources
 assert pkg_resources.get_distribution("requests").version >= '1.2.3'
 
 #My API key given by Mediacloud
@@ -71,25 +72,60 @@ def write_csv_media(media_name, chunk_size = 100):
         media.extend( data )
         last_media_id = media[-1]['media_id']
 
-def get_stories_from_media(media_id, num_stories=1000):
+def get_stories_from_media(media_name, num_stories = 1000):
     """
-    Args: media_id: media_id or list of media_id's
-          num_stories: number of stories to fetch from set of media_id(s)
+    Args: media_name: name of media source to get stories from
+          num_stories: number of stories to get from media_name
 
-    Get stories from media source(s) corresponding to given media_id(s)
+    Get stories from media source corresponding to given media_name
     """
-    fetch_size = num_stories
+    with open( './csv_storage/media.csv', 'r', newline="") as fh:
+        sources = pd.read_csv(fh, header=0)
+
+    media_id = sources[sources['name'] == media_name]['media_id'].get(0)
+    start = 0
+    count = 0
+    rows  = 100
+    opened = False
     stories = []
-    last_processed_stories_id = 0
-    while len(stories) < 2000:
-        fetched_stories = mc.storyList('( trump ) OR ( election )',
-                                       solr_filter=[ mc.publish_date_query( datetime.date(2016,1,1), datetime.date(2017,1,20)),
-                                                                             'tags_id_media:1'],
-                                        last_processed_stories_id=last_processed_stories_id, rows= fetch_size)
-        stories.extend( fetched_stories)
-        if len( fetched_stories) < fetch_size:
+
+    fieldnames = [
+        u'stories_id',
+        u'title',
+        u'publish_date'
+    ]
+
+    while True:
+        params = {
+            'last_processed_stories_id': start,
+            'rows': rows,
+            'q': 'media_id:{}'.format(str(media_id)),
+            'fq': 'publish_date:[2016-01-01T00:00:00Z TO 2017-1-20T00:00:00Z]',
+            'key': MY_API_KEY
+        }
+
+        print ("Fetching {} stories starting from {}".format( rows, start))
+        r = requests.get( 'https://api.mediacloud.org/api/v2/stories_public/list/', params = params, headers = { 'Accept': 'application/json'} )
+        data = r.json()
+
+        if len(data) == 0:
             break
 
-        last_processed_stories_id = stories[-1]['processed_stories_id']
+        count += len(data)
+        prune = num_stories - count
+        if prune <= 0:
+            stories.extend(data[:-prune])
+            break
 
-    print (json.dumps(stories))
+        stories.extend( data )
+        start = stories[-1][ 'processed_stories_id' ]
+
+    # Process info here (write in to CSV file)
+    with open( './csv_storage/media_' + media_name + '.csv', 'a', newline="") as csvfile:
+        print ("\nOpened file: Dumping story content for media_name:{}\n".format(media_name))
+        cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
+        if not opened:
+            cwriter.writeheader()
+            opened = True
+
+        cwriter.writerows( stories )
