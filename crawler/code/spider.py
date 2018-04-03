@@ -6,9 +6,9 @@ from sqlite3 import Error
 from article import Article
 try:
     from urllib.parse import urlpars
-except ImportError:                                                                                       from urlparse import urlparse
+except ImportError:                 
+    from urlparse import urlparse
 class FakeNewsSpider(scrapy.Spider):
-
     name = "FNAB"
     CONCURRENT_REQUESTS = 100
     REACTOR_THREADPOOL_MAXSIZE = 20
@@ -20,7 +20,12 @@ class FakeNewsSpider(scrapy.Spider):
     c = conn.cursor()
     c.execute('CREATE TABLE IF NOT EXISTS {tn} ({nf} {ft})'\
               .format(tn = tablename, nf = col1, ft = field_type))
-    white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com"} 
+    white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com", "http://70news.wordpress.com/", "http://www.americannews.com/", "http://www.beforeitsnews.com/", "http://www.celebtricity.com/",\
+			"http://www.conservative101.com/", "http://www.dailybuzzlive.com/", "http://www.dcgazette.com/", "http://www.disclose.tv/", "http://www.firebrandleft.com/", \
+			"http://www.globalresearch.ca/", "http://www.gossipmillsa.com/", "gummypost.com/", "http://www.liberalsociety.com/", "http://www.libertywriters.com/", "http://en.mediamass.net/",\
+			"nationalreport.net/", "http://www.neonnettle.com/", "http://www.newsbreakshere.com/", "http://www.thenewyorkevening.com/", "http://www.now8news.com/", "drudgereport.com/",\
+			"http://www.stuppid.com/"," http://worldnewsdailyreport.com/","http://yournewswire.com/"}
+
     # initial method run by scrapy
     def start_requests(self):
         urls = tuple(open(os.environ["URL_LIST"], 'r'))

@@ -22,8 +22,8 @@ for host in data_files:
             else:
 		final_dict[outlink] = 1
         count += 1
-
-    final_dict.pop(None)
+    if None in final_dict.keys():
+        final_dict.pop(None)
     with open(data_dir + "edges", "a+") as graph_host_file:
         for key in final_dict:
             print(key)
