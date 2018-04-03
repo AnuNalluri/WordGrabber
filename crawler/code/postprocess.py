@@ -7,6 +7,9 @@ data_dir = os.environ["DATA_DIR"]
 
 data_files = [f for f in listdir(data_dir) if isfile(join(data_dir, f)) and f is not None]
 print(data_files)
+with open(data_dir + "edges", "a+") as graph_host_file:
+	graph_host_file.write("hostname,outlink,count\n")
+
 for host in data_files:
 	final_dict = {}
 	with open(data_dir + host, "r") as content_file:
@@ -24,10 +27,11 @@ for host in data_files:
 		count += 1
 
 	if None in final_dict:
+		print("None in final dict...")
 		final_dict.pop(None)
 	with open(data_dir + "edges", "a+") as graph_host_file:
-		graph_host_file.write("hostname,outlink,count")
 		for key in final_dict:
-			print(key)
-			graph_host_file.write(host + "," + key + "," +  str(final_dict[key]) + "\n")
+			if key != "" and key != " " and "%20" not in key:
+				print(key)
+				graph_host_file.write(host + "," + key + "," +  str(final_dict[key]) + "\n")
 

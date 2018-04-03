@@ -22,7 +22,15 @@ class FakeNewsSpider(scrapy.Spider):
 	c = conn.cursor()
 	c.execute('CREATE TABLE IF NOT EXISTS {tn} ({nf} {ft})'\
 			  .format(tn = tablename, nf = col1, ft = field_type))
-	white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com"} 
+	DEPTH_PRIORITY = 1
+	SCHEDULER_DISK_QUEUE = 'scrapy.squeues.PickleFifoDiskQueue'
+	SCHEDULER_MEMORY_QUEUE = 'scrapy.squeues.FifoMemoryQueue'
+	custom_settings = {
+		"SCHEDULER_DISK_QUEUE" : SCHEDULER_DISK_QUEUE,
+		"DEPTH_PRIORITY" : 1,
+		"SCHEDULER_MEMORY_QUEUE" : SCHEDULER_MEMORY_QUEUE,
+	}
+	# white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com"} 
 
 	# initial method run by scrapy
 	def start_requests(self):
@@ -37,7 +45,7 @@ class FakeNewsSpider(scrapy.Spider):
 		data = Article(response)
 		data.save_to_file()
 		# iterate through the links on the page and continue crawling
-		gen = (link for link in data.get_links() if urlparse(link).hostname in FakeNewsSpider.white_list)
+		gen = (link for link in data.get_links())
 		for link in gen:
 			# check to see if url exists in sqllite db
 			row = FakeNewsSpider.c.execute("SELECT * FROM " + FakeNewsSpider.tablename + " WHERE " + FakeNewsSpider.col1 + " = ?", (link,))

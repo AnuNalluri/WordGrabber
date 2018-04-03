@@ -1,5 +1,6 @@
 import os
 import json
+import tldextract
 try:
 	from urllib.parse import urlparse
 except ImportError:
@@ -9,10 +10,13 @@ except ImportError:
 class Page:
 
 	def __init__(self, response):
-		self.hostname = urlparse(response.url).hostname
+		self.hostname = tldextract.extract(response.url).domain #urlparse(response.url).hostname
 		self.url = response.url
 		self.html = response.text
-		self.hostlinks = [urlparse(link.extract()).hostname for link in response.xpath("//a/@href")]
+		self.hostlinks = [tldextract.extract(link.extract()).domain for link in response.xpath("//a/@href")]
+
+		self.hostname = self.hostname.replace(",", "")
+		self.hostname = self.hostname.replace(" ", "")
 
 	def save_to_file(self):
 		with open(os.environ["DATA_DIR"] + self.hostname, "a+") as f:
@@ -29,7 +33,7 @@ class Article:
 	def extract_data(self):
 		self.title = self.response.xpath("//title/text()").extract()
 		self.links = [link.extract() for link in self.response.xpath("//a/@href")]
-		self.url = urlparse(self.response.url).hostname
+		self.url = tldextract.extract(self.response.url).domain
 		# include other data types that we are looking for
 
 	def to_dict(self):
