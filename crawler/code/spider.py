@@ -2,6 +2,7 @@ import scrapy
 import os
 import sqlite3
 from sqlite3 import Error
+import tldextract
 
 from article import Article
 try:
@@ -29,15 +30,18 @@ class FakeNewsSpider(scrapy.Spider):
 		"SCHEDULER_DISK_QUEUE" : SCHEDULER_DISK_QUEUE,
 		"DEPTH_PRIORITY" : 1,
 		"SCHEDULER_MEMORY_QUEUE" : SCHEDULER_MEMORY_QUEUE,
+		"DEPTH_LIMIT" : 2,
 	}
-	white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com", "http://70news.wordpress.com/", "http://www.americannews.com/", "http://www.beforeitsnews.com/", 
+	og_white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com", "http://70news.wordpress.com/", "http://www.americannews.com/", "http://www.beforeitsnews.com/", 
 			"http://www.celebtricity.com/", "http://www.conservative101.com/", "http://www.dailybuzzlive.com/", "http://www.dcgazette.com/", "http://www.disclose.tv/", 
 			"http://www.firebrandleft.com/",  "http://www.globalresearch.ca/", "http://www.gossipmillsa.com/", "gummypost.com/", "http://www.liberalsociety.com/", 
 			"http://www.libertywriters.com/", "http://en.mediamass.net/", "nationalreport.net/", "http://www.neonnettle.com/", "http://www.newsbreakshere.com/", 
 			"http://www.thenewyorkevening.com/", "http://www.now8news.com/", "drudgereport.com/", "http://www.stuppid.com/"," http://worldnewsdailyreport.com/","http://yournewswire.com/"}
+	white_list = [tldextract.extract(item).domain for item in og_white_list]
 	# initial method run by scrapy
 	def start_requests(self):
 		urls = tuple(open(os.environ["URL_LIST"], 'r'))
+		# urls = FakeNewsSpider.og_white_list
 		for url in urls:
 			url = url.rstrip()
 			yield scrapy.Request(url=url, callback=self.parse)
@@ -50,6 +54,8 @@ class FakeNewsSpider(scrapy.Spider):
 		# iterate through the links on the page and continue crawling
 		gen = (link for link in data.get_links())
 		for link in gen:
+			# if tldextract.extract(link).domain not in FakeNewsSpider.white_list:
+				# continue
 			# check to see if url exists in sqllite db
 			row = FakeNewsSpider.c.execute("SELECT * FROM " + FakeNewsSpider.tablename + " WHERE " + FakeNewsSpider.col1 + " = ?", (link,))
 			# if it does then do not yield, if it doesn't then add it to db and yield
