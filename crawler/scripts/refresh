@@ -1,0 +1,4 @@
+chmod -R 777 data
+chmod 777 visited.db
+rm -rf data
+rm -f visited.db

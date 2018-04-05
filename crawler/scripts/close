@@ -1,0 +1,3 @@
+#!/bin/bash
+
+$VIRTUAL_ENV/../database/bin/neo4j stop
