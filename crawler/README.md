@@ -1,12 +1,14 @@
 # Setup Instructions - Mac
 
-## Crawl 
+## Initial
+1. First, start a virtual environment.
+2. Next out by setting your environment variables in setup/set_env.sh
+3. Once you set the environment variables to the correct values, run `source setup/set_env.sh` to load the environment variables into the environment. Additionally, this will install all the dependencies for you.
+4. (Optional) Take all the scripts under the script folder and move it to the correct directory so that you can run the bash scripts without calling `source` everytime.
 
-1. Create a data directory in the fnab_network/crawler/ directory
-2. Create a urls file which lists (line-by-line) the urls you want to begin crawling
-3. Run "source crawl" to crawl using the code/spider.py file
-4. To run a different spider, run "source crawl <spider file name>.py"
+## Crawl
+1. To crawl, run `crawl`.
 
-You can also move the "crawl" bash script to env/bin/ and can simply run "crawl" in the future.
+Crawling will essentially start the crawling spider with the options set in the `code/spider.py` file. 
 
 # Set Instructions - Ubuntu
