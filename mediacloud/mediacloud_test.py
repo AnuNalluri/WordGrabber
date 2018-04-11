@@ -1,6 +1,8 @@
 import mediacloud, json, datetime, csv
 import pandas as pd
 import requests
+import os
+from pathlib import Path
 import pkg_resources
 assert pkg_resources.get_distribution("requests").version >= '1.2.3'
 
@@ -121,6 +123,7 @@ def get_stories_from_media(media_name, num_stories = 1000):
         start = stories[-1][ 'processed_stories_id' ]
 
     # Process info here (write in to CSV file)
+    media_name = media_name.replace(' ', '_')
     with open( './csv_storage/media_' + media_name + '.csv', 'a', newline="") as csvfile:
         print ("\nOpened file: Dumping story content for media_name:{}\n".format(media_name))
         cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
@@ -129,3 +132,79 @@ def get_stories_from_media(media_name, num_stories = 1000):
             opened = True
 
         cwriter.writerows( stories )
+
+def get_stories_from_stories(media_name, num_stories=1000, story_idx = 0):
+    """
+    Args: media_name: media_name for which we want out-linked stories (from pre-existing stories)
+          num_stories: max number of out-linked stories we want to grab from each media_name
+          story_idx: The index of the story that is currently grabbing outlinks
+
+    Gets the stories referenced by the stories we've already grabbed from media_name
+    """
+    media_name = media_name.replace(' ', '_')
+    with open('./csv_storage/media_' + media_name + '.csv', 'r', newline="") as fh:
+        table = pd.read_csv(fh, header=0)
+    story_ids = table['stories_id']
+    start = 0
+    rows = 100
+    count = 0
+    stories = []
+    opened = False
+
+    def reset_defaults():
+        start = 0
+        count = 0
+        stories = []
+
+    def write_to_csv(media=[]):
+        fieldnames = [
+            u'stories_id',
+            u'title',
+            u'publish_date'
+        ]
+
+        path_name = './csv_storage/media_' + media_name + '_outlinks.csv'
+        with open(path_name, 'w', newline="") as csvfile:
+            cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
+
+            if not os.path.getsize(path_name):
+                cwriter.writeheader()
+
+            cwriter.writerows( media )
+
+    while True:
+
+        if story_idx == len(table.index):
+            break
+
+        story_id = story_ids.get(story_idx)
+        params = {
+            'last_processed_stories_id': start,
+            'rows': rows,
+            # TODO: Need help writing the correct query to get outlinks
+            'fq': '{~ timespan:1234 link_from_story:{}}'.format(str(story_id)),
+            'key': MY_API_KEY
+        }
+        print ("Fetching {} stories starting from {}".format( rows, start))
+        r = requests.get( 'https://api.mediacloud.org/api/v2/stories_public/list', params = params, headers = { 'Accept': 'application/json'})
+        data = r.json()
+        print (data)
+
+        if len(data) == 0:
+            story_idx += 1
+            write_to_csv(stories)
+            reset_defaults()
+            continue
+
+        count += len(data)
+        prune = num_stories - count
+        if prune <= 0:
+            stories.extend(data[:-prune])
+            story_idx += 1
+            write_to_csv(stories)
+            reset_defaults()
+            continue
+
+        stories.extend( data )
+        # print (stories)
+        start = stories[-1][ 'processed_stories_id' ]

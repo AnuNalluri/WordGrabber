@@ -7,6 +7,7 @@ import json
 FAKE_NEWS = "red"
 SOCIAL_MEDIA = "blue"
 
+
 options = {
 	'colored_nodes' : {
 		'rt' : FAKE_NEWS,
@@ -18,9 +19,28 @@ options = {
 		'google' : SOCIAL_MEDIA,
 		'soundcloud' : SOCIAL_MEDIA,
 		'youtube' : SOCIAL_MEDIA,
-		't' : SOCIAL_MEDIA
+		't' : SOCIAL_MEDIA,
+		'tumblr' : SOCIAL_MEDIA,
+		'pinterest' : SOCIAL_MEDIA,
+		'dcgazette' : FAKE_NEWS,
+		'infowars' : FAKE_NEWS,
+		'apple' : SOCIAL_MEDIA,
+		'dailymotion' : SOCIAL_MEDIA,
+		'disqus' : SOCIAL_MEDIA,
+		'microsoft' : SOCIAL_MEDIA,
+		'naturalnews' : FAKE_NEWS,
+		'telegram' : SOCIAL_MEDIA,
+		'instagram' : SOCIAL_MEDIA,
+		'twimg' : SOCIAL_MEDIA,
+		'infowarsstore' : FAKE_NEWS,
+		'alternativenews' : FAKE_NEWS,
+		'prisonplanet' : FAKE_NEWS,
+		'newstarget' : FAKE_NEWS,
 	},
 	'default_node_color' : 'green',
+	'ignore' : {
+		'https', 'http', 'php', 'javascript', 'mailto', 'html', 'enable-javascript'
+	}
 }
 
 db = Neo4JDB(os.environ["NEO_DB_URL"], os.environ["NEO_DB_USER"], os.environ["NEO_DB_PASS"])
@@ -43,7 +63,9 @@ def to_json():
 		node = record["n"]
 		dict_n = dict()
 		host_name = node.get("host_name")
-		
+		if host_name in options['ignore']:
+			print("Ignoring " + host_name + "...")
+			continue
 		dict_n["name"] = host_name
 		dict_n["id"] = counter
 		dict_n["color"] = in_colored_nodes(host_name)
@@ -61,7 +83,9 @@ def to_json():
 		target = record["m"]
 		dict_r = dict()
 
-		if source.get("host_name") == target.get("host_name"):
+		if source.get("host_name") == target.get("host_name") or \
+			source.get("host_name") in options['ignore'] or \
+			target.get("host_name") in options['ignore']:
 			continue
 		
 		weight = relationship.get("weight")

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Set environment variables
+source $VIRTUAL_ENV/../setup/set_env.sh
+
+$VIRTUAL_ENV/../database/bin/neo4j start
+
+# Wait for database to load
+sleep 10
+
+# Load the data into the database, default use $NEO_DATA variable
+python $VIRTUAL_ENV/../code/load.py $NEO_DATA
