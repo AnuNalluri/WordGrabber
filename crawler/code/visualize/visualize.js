@@ -2,12 +2,11 @@ var width = 960;
 var height = 600;
 
 var zoomed = function() {
-	console.log("zoomed!");
 	node.attr("transform", d3.event.transform);
 }
 
 var setNodeRadius = function(d) {
-	return Math.min(100, Math.max(5, d.size));
+	return Math.sqrt(d.inlinks_num);
 }
 
 var setNodeText = function(d) {
@@ -15,15 +14,53 @@ var setNodeText = function(d) {
 }
 
 var setNodeTextSize = function(d) {
-	return Math.min(15, d.size / 12);
+	return 12;
 }
 
 var setNodeColor = function(d) {
-	return d.color;
+	if (d.category == "OTHER") {
+		return "green";
+	} else if (d.category == "REAL") {
+		return "yellow";
+	} else if (d.category == "FAKE") {
+		return "red";
+	} else if (d.category == "SOCIAL") {
+		return "blue";
+	} else {
+		return "black";
+	}
+}
+
+var nodeClicked = function(d) {
+	console.log("Node number: " + d.id);
+	console.log("Node name: " + d.name);
+	console.log("Number of outlinks: " + d.outlinks_num);
+	console.log("Number of inlinks: " + d.inlinks_num);
+	console.log("Number of indegree: " + d.indegree);
+	console.log("Number of indegree: " + d.indegree);
+	console.log("Number of category: " + d.category);
+	console.log("\n");
 }
 
 var setLinkWidth = function(d) {
 	return Math.sqrt(d.weight);
+}
+
+var setLinkColor = function(d) {
+	if (d.source_type == "FAKE" && d.dest_type == "FAKE") {
+		return "red";
+	} else {
+		return "#999";
+	}
+}
+
+var linkClicked = function(d) {
+	console.log("Link source: " + d.source.name);
+	console.log("Link target: " + d.target.name);
+	console.log("Link source type: " + d.source_type);
+	console.log("Link dest type: " + d.dest_type);
+	console.log("Link weight: " + d.weight);
+	console.log("\n");
 }
 
 var canvas = d3.select("svg"),
@@ -35,7 +72,6 @@ var canvas = d3.select("svg"),
 var g = canvas.append("g");
 
 canvas.call(d3.zoom().on("zoom", function() {
-		console.log("zoomed!");
 		g.attr("transform", d3.event.transform);
 	}));
 
@@ -51,7 +87,8 @@ var loadJSON = function(error, json) {
 					.enter()
 					.append("line")
 					.attr("class", "link")
-					.style("stroke-width", setLinkWidth);
+					.style("stroke-width", setLinkWidth)
+					.style("stroke", setLinkColor);
 
 	var node = g.selectAll(".node")
 					.data(json.nodes)
@@ -62,7 +99,8 @@ var loadJSON = function(error, json) {
 							.on("start", dragstarted)
 							.on("drag", dragged)
 					);
-	
+	g.selectAll(".node").on('click', nodeClicked);
+	g.selectAll(".link").on('click', linkClicked);
 
 	node.append("circle")
 		.attr("r", setNodeRadius)

@@ -6,6 +6,8 @@ export NEO_DB_URL="bolt://localhost"
 export NEO_DB_USER="neo4j"
 export NEO_DB_PASS="fnab"
 export NEO_DATA="edges"
+export CATEGORIES=$VIRTUAL_ENV"/../categories/"
+export WHITE_LIST="0"
 
 pip install -r $VIRTUAL_ENV"/../requirements.txt"
 
