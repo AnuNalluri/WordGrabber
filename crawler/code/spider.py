@@ -29,7 +29,7 @@ class FakeNewsSpider(scrapy.Spider):
 		"SCHEDULER_DISK_QUEUE" : SCHEDULER_DISK_QUEUE,
 		"DEPTH_PRIORITY" : 1,
 		"SCHEDULER_MEMORY_QUEUE" : SCHEDULER_MEMORY_QUEUE,
-                "DEPTH_LIMIT" : 6
+        "DEPTH_LIMIT" : 15
 	}
 	white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com", "http://70news.wordpress.com/", "http://www.americannews.com/", "http://www.beforeitsnews.com/", 
 			"http://www.celebtricity.com/", "http://www.conservative101.com/", "http://www.dailybuzzlive.com/", "http://www.dcgazette.com/", "http://www.disclose.tv/", 
