@@ -32,14 +32,13 @@ var setNodeColor = function(d) {
 }
 
 var nodeClicked = function(d) {
-	console.log("Node number: " + d.id);
-	console.log("Node name: " + d.name);
-	console.log("Number of outlinks: " + d.outlinks_num);
-	console.log("Number of inlinks: " + d.inlinks_num);
-	console.log("Number of indegree: " + d.indegree);
-	console.log("Number of indegree: " + d.indegree);
-	console.log("Number of category: " + d.category);
-	console.log("\n");
+	alert("Node number: " + d.id  + "\n" +
+		"Node name: " + d.name + "\n" +
+		"Number of outlinks: " + d.outlinks_num + "\n" +
+		"Number of inlinks: " + d.inlinks_num + "\n" +
+		"Number of outdegree: " + d.outdegree + "\n" +
+		"Number of indegree: " + d.indegree + "\n" +
+		"Category: " + d.category);
 }
 
 var setLinkWidth = function(d) {
@@ -50,17 +49,18 @@ var setLinkColor = function(d) {
 	if (d.source_type == "FAKE" && d.dest_type == "FAKE") {
 		return "red";
 	} else {
-		return "#999";
+		return "white";
 	}
 }
 
 var linkClicked = function(d) {
-	console.log("Link source: " + d.source.name);
-	console.log("Link target: " + d.target.name);
-	console.log("Link source type: " + d.source_type);
-	console.log("Link dest type: " + d.dest_type);
-	console.log("Link weight: " + d.weight);
-	console.log("\n");
+	alert(
+	"Link source: " + d.source.name + "\n" +
+	"Link target: " + d.target.name + "\n" +
+	"Link source type: " + d.source_type + "\n" +
+	"Link dest type: " + d.dest_type + "\n" +
+	"Link weight: " + d.weight
+	);
 }
 
 var canvas = d3.select("svg"),
