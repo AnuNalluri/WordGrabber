@@ -102,7 +102,7 @@ var loadJSON = function(error, json) {
 					.append("line")
 					.attr("class", "link")
 					.style("stroke-width", setLinkWidth)
-					.style("stroke", setLinkColor);
+					.style("stroke", setLinkColor)
 					.attr("marker-end", "url(#arrowhead)");
 
 	var node = g.selectAll(".node")
