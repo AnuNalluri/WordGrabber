@@ -30,7 +30,7 @@ class FakeNewsSpider(scrapy.Spider):
 		"SCHEDULER_DISK_QUEUE" : SCHEDULER_DISK_QUEUE,
 		"DEPTH_PRIORITY" : 1,
 		"SCHEDULER_MEMORY_QUEUE" : SCHEDULER_MEMORY_QUEUE,
-		"DEPTH_LIMIT" : 2,
+    "DEPTH_LIMIT" : 15
 	}
 	og_white_list = {"www.infowars.com", "www.naturalnews.com", "www.rt.com", "http://70news.wordpress.com/", "http://www.americannews.com/", "http://www.beforeitsnews.com/", 
 			"http://www.celebtricity.com/", "http://www.conservative101.com/", "http://www.dailybuzzlive.com/", "http://www.dcgazette.com/", "http://www.disclose.tv/", 
@@ -54,8 +54,7 @@ class FakeNewsSpider(scrapy.Spider):
 		# iterate through the links on the page and continue crawling
 		gen = (link for link in data.get_links())
 		for link in gen:
-			# if tldextract.extract(link).domain not in FakeNewsSpider.white_list:
-				# continue
+      
 			# check to see if url exists in sqllite db
 			row = FakeNewsSpider.c.execute("SELECT * FROM " + FakeNewsSpider.tablename + " WHERE " + FakeNewsSpider.col1 + " = ?", (link,))
 			# if it does then do not yield, if it doesn't then add it to db and yield
