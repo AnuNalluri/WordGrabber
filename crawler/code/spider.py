@@ -29,29 +29,33 @@ class FakeNewsSpider(scrapy.Spider):
 	custom_settings = {
 	   "SCHEDULER_DISK_QUEUE" : SCHEDULER_DISK_QUEUE,
 	   "SCHEDULER_MEMORY_QUEUE" : SCHEDULER_MEMORY_QUEUE,
-	   "DEPTH_LIMIT" : 15,
-	   "DEPTH_PRIORITY": 99
+	   "DEPTH_LIMIT" : 1000,
+	   "CONCURRENT_REQUESTS" : 800,
 	 }
-	def do_all(self):
-	urls = tuple(open(os.environ["URL_LIST"], 'r'))
-	for url in urls:
-			url = url.rstrip()
-			self.crawler.engine.slot.add_request(scrapy.Request(url=url, callback=self.parse))
+	counter = 0
+	counters = 0
 	def start_requests(self):
 	# urls = FakeNewsSpider.og_white_list
-		self.do_all()
+		# self.do_all()
 		urls = tuple(open(os.environ["URL_LIST"], 'r'))
 		for url in urls:
 			url = url.rstrip()
-			yield scrapy.Request(url=url, callback=self.parse)
+			print("ADDED TO PRIORITY NUMBER: " + str(FakeNewsSpider.counter))
+			req = scrapy.Request(url=url, callback=self.parse, priority = 1, dont_filter=True)
+			req.meta["priority"] = 1
+			yield req
+			FakeNewsSpider.counter += 1
+
 	# call back for each web page
 	def parse(self, response):
+		print(FakeNewsSpider.counters)
+		if (response.meta["priority"] == 1):
+			FakeNewsSpider.counters += 1
 		# data model for parsing
 		data = Article(response)
 		data.save_to_file()
 		# iterate through the links on the page and continue crawling
 		gen = (link for link in data.get_links())
-		print(len(self.crawler.engine.slot.inprogress))
 		for link in gen:
 			# check to see if url exists in sqllite db
 			row = FakeNewsSpider.c.execute("SELECT * FROM " + FakeNewsSpider.tablename + " WHERE " + FakeNewsSpider.col1 + " = ?", (link,))
@@ -59,6 +63,10 @@ class FakeNewsSpider(scrapy.Spider):
 			if row.fetchone() == None:
 				FakeNewsSpider.c.execute("INSERT INTO " + FakeNewsSpider.tablename + " (" + FakeNewsSpider.col1 + ") VALUES (?)", (link,))
 				FakeNewsSpider.conn.commit()
-				req = response.follow(link, callback=self.parse)
+				new_priority = int(response.meta["priority"]) - 1
+				req = response.follow(link, callback=self.parse, priority = new_priority)
+				req.meta["priority"] = new_priority
 				yield req
+
+
 		FakeNewsSpider.conn.commit()
