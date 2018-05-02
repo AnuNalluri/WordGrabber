@@ -1,0 +1,3 @@
+stories_id,url,media_name,media_id,title,publish_date,snapshots_id,foci_id,timespans_id,inlink_count,outlink_count,foci,facebook_share_count
+588857782,http://www.financetwitter.com/2016/07/no-wonder-putin-laughs-at-america-fbi-attorney-general-cover-up-clinton-scandal.html,financetwitter.com,368673,No Wonder Putin Laughs At America – F.B.I. & A.G. Cover-Up Clinton Scandal,2016-07-06 08:00:00,1879,,127285,1,4,"[{'foci_id': 1171, 'stories_id': 588857782, 'focal_set_name': 'Emails', 'name': 'Emails'}]",60
+590760313,http://www.financetwitter.com,financetwitter.com,368673,FinanceTwitter,undateable,1879,,127285,1,0,"[{'foci_id': 1171, 'stories_id': 590760313, 'focal_set_name': 'Emails', 'name': 'Emails'}]",1182

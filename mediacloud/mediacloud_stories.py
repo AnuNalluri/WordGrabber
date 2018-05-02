@@ -1,3 +1,6 @@
+#####THIS FILE NOT IN USE CURRENTLY
+
+
 import mediacloud, json, datetime, csv
 import pandas as pd
 import requests
@@ -15,8 +18,6 @@ RT = 305385
 NAT_NEWS = 24030
 
 mc = mediacloud.MediaCloud(MY_API_KEY)
-csv_files = os.listdir(path='./csv_storage/')
-csv_files.remove('media.csv')
 
 def get_stories_from_media(media_name, num_stories = 1000):
     """
@@ -82,89 +83,3 @@ def get_stories_from_media(media_name, num_stories = 1000):
             opened = True
 
         cwriter.writerows( stories )
-
-def recursive_story_search(num_stories=50, depth = 2, count = 2, csvs = csv_files):
-    """
-    Args: num_stories: max number of out-linked stories we want to grab from each media_name
-          ** topic_id: id to get stories associated with a particular topic --> not added yet
-          depth: Specify recursive depth we want to spider for outlinks
-
-    Gets the stories referenced by the stories we've already grabbed from media_name
-    """
-    if depth == 1:
-        print ('Finished spidering')
-        return
-
-    def write_to_csv(media=[]):
-        # print (media)
-        fieldnames = [
-            u'stories_id',
-            u'url',
-            u'media_name',
-            u'media_id',
-            u'title',
-            u'publish_date',
-            u'snapshots_id',
-            u'foci_id',
-            u'timespans_id',
-            u'inlink_count',
-            u'outlink_count',
-            u'foci',
-            u'facebook_share_count'
-        ]
-
-        path_name = './csv_storage/media_' + media_name + '_outlinks_' + 'degree' + str(count) + '.csv'
-        with open(path_name, 'a', newline="") as csvfile:
-            cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
-
-            if not os.path.getsize(path_name):
-                cwriter.writeheader()
-
-            cwriter.writerows( media )
-
-    with open('./csv_storage/media.csv') as fh:
-        table = pd.read_csv(fh, header=0)
-
-    media_lst = table['name']
-
-    for media_name in media_lst:
-        media_name = media_name.replace(' ', '_')
-        with open('./csv_storage/media_' + media_name + '_outlinks.csv', 'r', newline="") as fh:
-            table = pd.read_csv(fh, header=0)
-
-        idx = 0
-        ids = table['stories_id']
-
-        while idx < ids.shape[0]:
-            stories_id = ids.iloc[idx]
-            stories = []
-
-
-            params = {
-                # 'last_processed_stories_id': start,
-                'limit': num_stories,
-                'link_from_stories_id': '{}'.format(str(stories_id)),
-                'key': MY_API_KEY
-            }
-            # print (str(story_id) + '\n\n')
-            print ("Fetching {} stories linking from {}'s stories'".format(str(num_stories), str(media_name)))
-            r = requests.get( 'https://api.mediacloud.org/api/v2/topics/1404/stories/list', params = params, headers = { 'Accept': 'application/json'})
-            data = r.json()
-            print (len(data['stories']))
-            stories.extend(data['stories'])
-
-
-            write_to_csv(stories)
-
-            idx += 1
-    recursive_story_search(depth = depth-1, count = count + 1)
-
-def get_topics():
-    params = {
-        'name':'election',
-        'key': MY_API_KEY,
-        'limit': 1000
-    }
-    r = requests.get( 'https://api.mediacloud.org/api/v2/topics/list', params= params, headers = { 'Accept': 'application/json'})
-    data = r.json()
-    print (data)

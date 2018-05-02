@@ -1,6 +1,4 @@
 media_id,url,name
-305385,http://www.rt.com,Russia Today
-302379,http://dcleaks.com/,dcleaks.com
 290867,http://americannewsx.com/,americannewsx.com
 70745,http://21stcenturywire.com/#spider,21stcenturywire.com
 50475,http://70news.ru/#spider,70news.ru
@@ -828,6 +826,9 @@ Mid Queens))"
 753499,http://tichronicles.x10host.com/,tichronicles.x10host.com
 753851,http://themaxeychronicles.blogspot.com/,themaxeychronicles.blogspot.com
 754056,http://chronicleflask.com/,chronicleflask.com
+757093,http://theeventchronicle.com.ridder.co/,theeventchronicle.com.ridder.co
+757760,http://orwellianchronicle.blogspot.com/,orwellianchronicle.blogspot.com
+758629,http://hitechchronicle.com/,hitechchronicle.com
 148593,http://civictribune.com/,civictribune.com
 111135,http://clickhole.com/,clickhole.com
 752994,http://patriothole.clickhole.com/,patriothole.clickhole.com
@@ -866,6 +867,7 @@ Mid Queens))"
 365467,http://MediaMass.net,Mediamass
 301434,http://endingthefed.com/,endingthefed.com
 233176,http://flyheight.com/,flyheight.com
+758998,http://flyheightvideos.com/,flyheightvideos.com
 208913,http://fprnradio.com/,fprnradio.com
 91340,http://www.freewoodpost.com/#spider,freewoodpost.com
 183005,http://geoengineeringwatch.org/,geoengineeringwatch.org
@@ -899,6 +901,7 @@ Mid Queens))"
 86654,http://infowarsmoneybomb.com/#spider,infowarsmoneybomb.com
 110503,http://rss.infowars.com/,rss.infowars.com
 146000,http://infowarshealth.com/,infowarshealth.com
+210953,http://infowars/,infowars
 240481,https://infowars.wordpress.com/,infowars.wordpress.com
 278594,http://infowarsstore.com/,infowarsstore.com
 280496,http://infowars.com./,infowars.com.
@@ -912,6 +915,7 @@ Mid Queens))"
 639644,http://infowars.zendesk.com/,infowars.zendesk.com
 697488,http://infowars.com.convey.pro/,infowars.com.convey.pro
 752864,http://infowars.com.ridder.co/,infowars.com.ridder.co
+757573,http://infowarsbrasil.org/,infowarsbrasil.org
 53075,http://intellihub.com/#spider,intellihub.com
 86418,http://jonesreport.com/#spider,jonesreport.com
 28661,http://www.lewrockwell.com,lewrockwell.com
@@ -1017,6 +1021,7 @@ Mid Queens))"
 33865,http://www.prisonplanet.tv#spider,prisonplanet.tv
 238172,http://prisonplanet.at/,prisonplanet.at
 550856,http://static.prisonplanet.com/,static.prisonplanet.com
+757019,http://prisonplanet.pl/,prisonplanet.pl
 370425,http://react365.com/,react365.com
 179321,http://realfarmacy.com/,realfarmacy.com
 287854,http://realnewsrightnow.com/,realnewsrightnow.com
@@ -1133,6 +1138,7 @@ Mid Queens))"
 551580,http://veteranstodaynews.com/,veteranstodaynews.com
 669441,http://veteranstoday.news/,veteranstoday.news
 675619,http://veteranstodaymedia.com/,veteranstodaymedia.com
+757321,http://veteranstoday.com.ln.is/,veteranstoday.com.ln.is
 361778,http://wakingupwisconsin.com/,wakingupwisconsin.com
 50272,http://weeklyworldnews.com/#spider,weeklyworldnews.com
 278905,http://winningdemocrats.com/,winningdemocrats.com
@@ -1224,6 +1230,7 @@ Mid Queens))"
 721169,http://lawndoctorfranchise.com/,lawndoctorfranchise.com
 736353,http://downtowndc.org/,downtowndc.org
 751110,http://lawndaleartcenter.org/,lawndaleartcenter.org
+761406,http://crosstowndoughnuts.com/,crosstowndoughnuts.com
 148047,http://worldnewsdailyreport.com/,worldnewsdailyreport.com
 144649,http://worldtruth.tv/,worldtruth.tv
 236348,http://worldtruthtoday.com/,worldtruthtoday.com
@@ -1235,3 +1242,5 @@ Mid Queens))"
 754194,http://yournewswires.com.convey.pro/,yournewswires.com.convey.pro
 756518,http://yournewswire-com.cdn.ampproject.org/,yournewswire-com.cdn.ampproject.org
 756647,http://yournewswire.com.linkis.com/,yournewswire.com.linkis.com
+302379,http://dcleaks.com/,dcleaks.com
+305385,http://www.rt.com,Russia Today
