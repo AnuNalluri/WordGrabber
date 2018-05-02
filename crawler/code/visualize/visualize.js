@@ -49,7 +49,7 @@ var setLinkColor = function(d) {
 	if (d.source_type == "FAKE" && d.dest_type == "FAKE") {
 		return "red";
 	} else {
-		return "white";
+		return "grey";
 	}
 }
 

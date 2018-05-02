@@ -29,22 +29,18 @@ class FakeNewsSpider(scrapy.Spider):
     custom_settings = {
        "SCHEDULER_DISK_QUEUE" : SCHEDULER_DISK_QUEUE,
        "SCHEDULER_MEMORY_QUEUE" : SCHEDULER_MEMORY_QUEUE,
-       "DEPTH_LIMIT" : 15,
-       "DEPTH_PRIORITY": 99
+       "DEPTH_LIMIT" : 2,
      }
-    def do_all(self):
+    def start_requests(self):
+        urls = tuple(open(os.environ["URL_LIST"], 'r'))
+        for url in urls:
+            print(url)
+            url = url.rstrip()
+            self.crawler.engine.slot.scheduler.enqueue_request(scrapy.Request(url=url, callback=self.parse))
         urls = tuple(open(os.environ["URL_LIST"], 'r'))
         for url in urls:
             url = url.rstrip()
-            self.crawler.engine.slot.add_request(scrapy.Request(url=url, callback=self.parse))
-    def start_requests(self):
-	# urls = FakeNewsSpider.og_white_list
-        self.do_all()
-	urls = tuple(open(os.environ["URL_LIST"], 'r'))
-        for url in urls:
-            url = url.rstrip()
-            yield scrapy.Request(url=url, callback=self.parse)
-       
+            yield(scrapy.Request(url=url, callback=self.parse))
     # call back for each web page
     def parse(self, response):
         # data model for parsing
@@ -52,7 +48,6 @@ class FakeNewsSpider(scrapy.Spider):
         data.save_to_file()
         # iterate through the links on the page and continue crawling
         gen = (link for link in data.get_links())
-        print(len(self.crawler.engine.slot.inprogress))
         for link in gen:
      
             # check to see if url exists in sqllite db
