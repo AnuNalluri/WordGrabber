@@ -1,6 +1,6 @@
 stories_id,url,media_name,media_id,title,publish_date,snapshots_id,foci_id,timespans_id,inlink_count,outlink_count,foci,facebook_share_count
 170031693,http://thepennyicecreamery.com/,thepennyicecreamery.com,100174,The Penny Ice Creamery,undateable,1879,,127285,8,0,[],770
-170018690,http://thepicnicbasketsc.com/,thepicnicbasketsc.com,100076,The Picnic Basket | Good food made with love,undateable,1879,,127285,4,1,"[{'foci_id': 1171, 'stories_id': 170018690, 'focal_set_name': 'Emails', 'name': 'Emails'}]",117
+170018690,http://thepicnicbasketsc.com/,thepicnicbasketsc.com,100076,The Picnic Basket | Good food made with love,undateable,1879,,127285,4,1,"[{'focal_set_name': 'Emails', 'foci_id': 1171, 'stories_id': 170018690, 'name': 'Emails'}]",117
 605846855,http://www.santacruzfarmersmarket.org,santacruzfarmersmarket.org,296011,Santa Cruz Farmers Markets,undateable,1879,,127285,3,0,[],1002
 591207527,http://www.lapostarestaurant.com/,lapostarestaurant.com,370482,"La Posta Restaurant - Santa Cruz, California - About",undateable,1879,,127285,3,0,[],252
 596558026,http://shop.ucsc.edu/about/index.html,ucsc.edu,137455,Meet the Staff,undateable,1879,,127285,1,0,[],0

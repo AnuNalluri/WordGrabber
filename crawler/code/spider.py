@@ -7,10 +7,10 @@ from scrapy import squeue
  
 from article import Article
 try:
-    from urllib.parse import urlparse
+	from urllib.parse import urlparse
 except ImportError:
-    from urlparse import urlparse
- 
+	from urlparse import urlparse
+
 class FakeNewsSpider(scrapy.Spider):
  
     name = "FNAB"
