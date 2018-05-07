@@ -15,7 +15,7 @@ G = nx.DiGraph()
 links = []
 nodes = []
 #Some graph options
-trimming = True
+trimming = False
 include_only = [SOC_MED, FAKE_NEWS, REAL_NEWS]
 def find_category(node):
 	category = "OTHER"

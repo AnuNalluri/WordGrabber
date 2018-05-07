@@ -16,6 +16,12 @@ class FakeNewsSpider(scrapy.Spider):
     name = "FNAB"
     CONCURRENT_REQUESTS = 100
     REACTOR_THREADPOOL_MAXSIZE = 20
+    FAKE_NEWS = set(open(os.environ["CATEGORIES"] + "fake_news_list", 'r').read().split())
+    FAKE_NEWS = [tldextract.extract(link).domain for link in FAKE_NEWS]
+    REAL_NEWS = set(open(os.environ["CATEGORIES"] + "real_list", 'r').read().split())
+    REAL_NEWS = [tldextract.extract(link).domain for link in REAL_NEWS]
+    allowed_urls = REAL_NEWS + FAKE_NEWS
+
     tablename = "VISITED_URLS"
     col1 = "URLS"
     field_type = 'TEXT'
