@@ -1,0 +1,3 @@
+stories_id,url,media_name,media_id,title,publish_date,snapshots_id,foci_id,timespans_id,inlink_count,outlink_count,foci,facebook_share_count
+345081778,http://shark-tank.com/2015/05/16/cruz-and-rubio-show-some-love/,The Shark Tank,6307,Cruz and Rubio Show Some Love,2015-05-16 08:21:35,1879,,127285,2,0,"[{'name': 'Right Half', 'focal_set_name': 'Retweet Partisanship Halves', 'stories_id': 345081778, 'foci_id': 1174}]",58
+588487610,http://beforeitsnews.com/opinion-conservative/2015/05/cruz-and-rubio-show-some-love-3009488.html,beforeitsnews.com,29363,Cruz and Rubio Show Some Love | Opinion - Conservative,2015-05-16 01:26:00,1879,,127285,1,1,"[{'name': 'Right Half', 'focal_set_name': 'Retweet Partisanship Halves', 'stories_id': 588487610, 'foci_id': 1174}]",0
