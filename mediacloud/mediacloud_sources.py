@@ -35,21 +35,35 @@ hoaxy_media_lst = ["americannewsx", "21stcenturywire", "70news", "abcnews.com.co
 "pakalertpress", "politicalblindspot", "politicalears", "politicops", "politicususa", "prisonplanet", "react365", "realfarmacy",
 "realnewsrightnow", "redflagnews", "redstate", "rilenews", "rockcitytimes", "satiratribune", "stuppid", "theblaze",
 "thebostontribune", "thedailysheeple", "thedcgazette", "thefreethoughtproject", "thelapine", "thenewsnerd", "theonion", "theracketreport",
-"therundownlive", "thespoof", "theuspatriot", "truthfrequencyradio", "twitchy", "unconfirmedsources", "USAToday.com.co", "usuncut", "veteranstoday", "wakingupwisconsin", "weeklyworldnews", "wideawakeamerica", "winningdemocrats", "witscience", "wnd", "worldnewsdailyreport", "worldtruth",
-"yournewswire", "dcleaks.com", "Russia Today"]
+"therundownlive", "thespoof", "theuspatriot", "truthfrequencyradio", "twitchy", "unconfirmedsources", "usatoday.com.co", "usuncut", "veteranstoday", "wakingupwisconsin", "weeklyworldnews", "wideawakeamerica", "winningdemocrats", "witscience", "wnd", "worldnewsdailyreport", "worldtruth",
+"yournewswire", "dcleaks.com", "russia today"]
 
 
-def write_csv_media(media_name, chunk_size = 100):
+def get_media(chunk_size = 100, start_num=0, instance=0):
     """
-    Args: media_names: media source name (can have multiple) in list format
-          chunk_size: max # of media sources that can be written per iteration
+    Args: chunk_size: max # of media sources that can be written per iteration
 
-    Write the media_id, url, and names of the given media_name(s) in a CSV file
+    Write the media_id, url, and names of known media sources in a CSV file
     """
     media = []
-    media_idx = 0
-    last_media_id = 0
-    rows  = chunk_size
+    start = start_num
+    rows = chunk_size
+    while True:
+        params = { 'last_media_id': start, 'rows': rows, 'key': MY_API_KEY }
+        print "start:{} rows:{}".format( start, rows)
+        r = requests.get( 'https://api.mediacloud.org/api/v2/media/list', params = params, headers = { 'Accept': 'application/json'} )
+        data = r.json()
+
+        if len(data) == 0:
+            break
+
+        start += rows
+        media.extend( data )
+        write_to_csv(media, instance)
+        media = []
+        instance += 1
+
+def write_to_csv(media, instance=0):
 
     fieldnames = [
         u'media_id',
@@ -57,54 +71,29 @@ def write_csv_media(media_name, chunk_size = 100):
         u'name'
     ]
 
-    while True:
-        params = { 'last_media_id': last_media_id, 'rows': rows, 'name': media_name[media_idx], 'key': MY_API_KEY }
-        print ("start:{} rows:{}".format( last_media_id, rows))
-        r = requests.get( 'https://api.mediacloud.org/api/v2/media/list', params = params, headers = { 'Accept': 'application/json'} )
-        data = r.json()
+    with open( './tmp/media.csv', 'a+') as csvfile:
+        print "open"
+        try:
+            cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
+            if instance == 0:
+                cwriter.writeheader()
+            cwriter.writerows( media )
+        except UnicodeEncodeError as ue:
+            pass
 
-        if not len(data):
-
-            # If there are more media_names, write what we have to csv file and continue
-            path_name = './csv_storage/media.csv'
-            with open( path_name, 'a') as csvfile:
-                print ("\nOpened file: Dumping media source content for {}\n".format(media_name[media_idx]))
-
-                # Flush media buffer to csv file
-                cwriter = csv.DictWriter( csvfile, fieldnames, extrasaction='ignore')
-
-                if not os.path.getsize(path_name):
-                    cwriter.writeheader()
-
-                cwriter.writerows( media )
-
-            # Continue to next user-inputted media_name
-            media_idx += 1
-            last_media_id = 0
-            media = []
-            if media_idx < len(media_name):
-                print ("Grabbing sources of next media name:{}\n".format(media_name[media_idx]))
-                continue
-
-            # Done if no more media sources to get
-            break
-
-
-        #add to media buffer and search for more media sources similar to current media_name
-        media.extend( data )
-        last_media_id = media[-1]['media_id']
 
 def parse_XML():
-    #Open the table mapping media_id to media_name
-    with open('./csv_storage/media.csv', 'r') as fh:
-        table = pd.read_csv(fh, header=0)
-
     #Iterate through edges and add using a dict
     media_conns = defaultdict(list)
-    tree = ET.parse('link-map-1404-80252.gexf')
+    tree = ET.parse('link-map-2345-213924.gexf')
     root = tree.getroot()
-    for edge in root.iter("{http://www.gexf.net/1.2draft}edge"):
-        media_conns[edge.get('source')].append((edge.get('target'), edge.get('weight')))
+    with open('./tmp/media.csv', 'r') as fh:
+        table = pd.read_csv(fh, header=0)
+        for edge in root.iter("{http://www.gexf.net/1.2draft}edge"):
+            src = map_id_to_name(table, int(edge.get('source')))
+            target = map_id_to_name(table, int(edge.get('target')))
+            weight = edge.get('weight')
+            media_conns[src].append((target, weight))
     return media_conns
 
 def postprocess_and_write_csv(media_conns):
@@ -129,7 +118,7 @@ def prune_non_fake():
         table = pd.read_csv(fh, header=0)
 
     fake_set = set(hoaxy_media_lst)
-    pruned = table[(table['hostname'].isin(fake_set)) | (table['outlink'].isin(fake_set))]
+    pruned = table[(table['hostname'].str.lower().isin(fake_set)) | (table['outlink'].str.lower().isin(fake_set))]
     pruned.to_csv('./pruned/edges.csv', index=False)
 
 def modify_domain_name():
@@ -162,8 +151,12 @@ def modify_domain_name():
 
     table.to_csv('./pruned/edges', index=False)
 
-def map_id_to_name():
-    # TODO Map hostname and outlink ID's to media names. Can do this before being written out.
+def map_id_to_name(table, id):
+    try:
+        name = table[table['media_id'] == id]['name'].iloc[0]
+    except IndexError as ie:
+        return id
+    return name
 
 
 def get_topics():
@@ -189,10 +182,12 @@ def check_requests():
     print (r.json())
 
 def main():
+    # check_requests()
+    # get_media(chunk_size=5, start_num=18265, instance=1)
     media_conns = parse_XML()
     postprocess_and_write_csv(media_conns)
     prune_non_fake()
-    modify_domain_name()
+    #modify_domain_name()
 
 if __name__ == "__main__":
     main()
